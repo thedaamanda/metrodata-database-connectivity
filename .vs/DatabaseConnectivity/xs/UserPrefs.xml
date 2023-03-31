@@ -1,0 +1,4 @@
+﻿<Properties StartupConfiguration="{89D3A702-5304-43E2-964E-6821DB97EE0D}|Default">
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.DatabaseConnectivity PreferredExecutionTarget="MonoDevelop.Default" FirstBuild="True" />
+</Properties>
