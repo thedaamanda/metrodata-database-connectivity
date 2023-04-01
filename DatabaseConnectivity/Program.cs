@@ -10,10 +10,11 @@ namespace DatabaseConnectivity
 
         public static void Main(string[] args)
         {
-            // GetAllRegion();
+            GetAllRegion();
             // InsertRegion("Region 1");
             // GetRegionById(1);
             // UpdateRegion(5, "Region 2");
+            // DeleteRegion(5);
         }
 
         // method untuk menampilkan semua data region
@@ -162,6 +163,46 @@ namespace DatabaseConnectivity
                 else
                 {
                     Console.WriteLine("Data gagal diubah");
+                }
+
+                // commit transaction
+                transaction.Commit();
+            } catch (Exception ex) {
+                // rollback transaction
+                transaction.Rollback();
+                Console.WriteLine("Error: " + ex.Message);
+            } finally {
+                // menutup koneksi
+                dbConn.CloseConnection();
+            }
+        }
+
+        // method untuk menghapus data region
+        public static void DeleteRegion(int id)
+        {
+            // membuka koneksi
+            dbConn.OpenConnection();
+
+            // membuat begin transaction
+            SqlTransaction transaction = dbConn.GetConnection().BeginTransaction();
+            try {
+                // membuat sql command
+                SqlCommand cmd = new SqlCommand("DELETE FROM region WHERE id = @id", dbConn.GetConnection(), transaction);
+
+                // menambahkan parameter
+                cmd.Parameters.AddWithValue("@id", id);
+
+                // mengeksekusi sql command
+                int result = cmd.ExecuteNonQuery();
+
+                // menampilkan hasil eksekusi
+                if (result > 0)
+                {
+                    Console.WriteLine("Data berhasil dihapus");
+                }
+                else
+                {
+                    Console.WriteLine("Data gagal dihapus");
                 }
 
                 // commit transaction
