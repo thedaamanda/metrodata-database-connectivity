@@ -10,8 +10,9 @@ namespace DatabaseConnectivity
 
         public static void Main(string[] args)
         {
-            GetAllRegion();
-            //InsertRegion("Region 2");
+            // GetAllRegion();
+            // InsertRegion("Region 2");
+            GetRegionById(1);
         }
 
         // method untuk menampilkan semua data region
@@ -20,33 +21,78 @@ namespace DatabaseConnectivity
             // membuka koneksi
             dbConn.OpenConnection();
 
-            // membuat sql command
-            SqlCommand cmd = new SqlCommand("SELECT * FROM region", dbConn.GetConnection());
+            try {
+                // membuat sql command
+                SqlCommand cmd = new SqlCommand("SELECT * FROM region", dbConn.GetConnection());
 
-            // membuat sql data reader
-            SqlDataReader reader = cmd.ExecuteReader();
+                // membuat sql data reader
+                SqlDataReader reader = cmd.ExecuteReader();
 
-            // membaca data
-            if (reader.HasRows)
-            {
-                while (reader.Read())
+                // membaca data
+                if (reader.HasRows)
                 {
-                    Console.WriteLine("ID\t: " + reader.GetInt32(0));
-                    Console.WriteLine("Name\t: " + reader.GetString(1));
-                    Console.WriteLine("=====================================");
+                    while (reader.Read())
+                    {
+                        Console.WriteLine("ID\t: " + reader.GetInt32(0));
+                        Console.WriteLine("Name\t: " + reader.GetString(1));
+                        Console.WriteLine("=====================================");
+                    }
                 }
-            }
-            else
-            {
-                Console.WriteLine("No rows found.");
-            }
+                else
+                {
+                    Console.WriteLine("No rows found.");
+                }
 
-            // menutup sql data reader
-            reader.Close();
-
-            // menutup koneksi
-            dbConn.CloseConnection();
+                // menutup sql data reader
+                reader.Close();
+            } catch (Exception ex) {
+                Console.WriteLine("Error: " + ex.Message);
+            } finally {
+                // menutup koneksi
+                dbConn.CloseConnection();
+            }
         }
+
+        // method untuk menampilkan data region berdasarkan id
+        public static void GetRegionById(int id)
+        {
+            // membuka koneksi
+            dbConn.OpenConnection();
+
+            try {
+                // membuat sql command
+                SqlCommand cmd = new SqlCommand("SELECT * FROM region WHERE id = @id", dbConn.GetConnection());
+
+                // menambahkan parameter
+                cmd.Parameters.AddWithValue("@id", id);
+
+                // membuat sql data reader
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                // membaca data
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine("ID\t: " + reader.GetInt32(0));
+                        Console.WriteLine("Name\t: " + reader.GetString(1));
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No rows found.");
+                }
+
+                // menutup sql data reader
+                reader.Close();
+            } catch (Exception ex) {
+                Console.WriteLine("Error: " + ex.Message);
+            } finally {
+                // menutup koneksi
+                dbConn.CloseConnection();
+            }
+        }
+
 
         // method untuk menambahkan data region
         public static void InsertRegion(string name)
