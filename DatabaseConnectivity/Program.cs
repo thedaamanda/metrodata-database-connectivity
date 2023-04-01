@@ -11,8 +11,9 @@ namespace DatabaseConnectivity
         public static void Main(string[] args)
         {
             // GetAllRegion();
-            // InsertRegion("Region 2");
-            GetRegionById(1);
+            // InsertRegion("Region 1");
+            // GetRegionById(1);
+            // UpdateRegion(5, "Region 2");
         }
 
         // method untuk menampilkan semua data region
@@ -120,6 +121,47 @@ namespace DatabaseConnectivity
                 else
                 {
                     Console.WriteLine("Data gagal ditambahkan");
+                }
+
+                // commit transaction
+                transaction.Commit();
+            } catch (Exception ex) {
+                // rollback transaction
+                transaction.Rollback();
+                Console.WriteLine("Error: " + ex.Message);
+            } finally {
+                // menutup koneksi
+                dbConn.CloseConnection();
+            }
+        }
+
+        // method untuk mengubah data region
+        public static void UpdateRegion(int id, string name)
+        {
+            // membuka koneksi
+            dbConn.OpenConnection();
+
+            // membuat begin transaction
+            SqlTransaction transaction = dbConn.GetConnection().BeginTransaction();
+            try {
+                // membuat sql command
+                SqlCommand cmd = new SqlCommand("UPDATE region SET name = @name WHERE id = @id", dbConn.GetConnection(), transaction);
+
+                // menambahkan parameter
+                cmd.Parameters.AddWithValue("@id", id);
+                cmd.Parameters.AddWithValue("@name", name);
+
+                // mengeksekusi sql command
+                int result = cmd.ExecuteNonQuery();
+
+                // menampilkan hasil eksekusi
+                if (result > 0)
+                {
+                    Console.WriteLine("Data berhasil diubah");
+                }
+                else
+                {
+                    Console.WriteLine("Data gagal diubah");
                 }
 
                 // commit transaction
